@@ -1,5 +1,4 @@
 -- Schema for the "accidents" table (SkyRAG project)
--- Run this once in the Supabase SQL editor (or via the import script)
 
 CREATE TABLE IF NOT EXISTS accidents (
     ntsb_no                 TEXT PRIMARY KEY,
