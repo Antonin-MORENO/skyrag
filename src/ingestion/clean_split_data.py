@@ -73,6 +73,14 @@ def clean_structured(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def build_narratives(df: pd.DataFrame) -> list[dict]:
+    
+    """
+    Builds one RAG document per row by concatenating ProbableCause, Findings,
+    and rep_text (skips rows with less than 50 chars of combined text).
+    Each document also stores metadata (date, location, aircraft, fatalities,
+    report URL) alongside the text, for filtering/display later on.s
+    """
+
     id_col = ID_COLUMN
     docs = []
 
