@@ -12,3 +12,6 @@ python-dotenv
 plotly
 requests
 tqdm
+sqlalchemy
+dotenv
+pandas
