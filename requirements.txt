@@ -1,0 +1,14 @@
+langchain
+langchain-groq
+langchain-community
+sentence-transformers
+chromadb
+psycopg2-binary
+sqlalchemy
+streamlit
+pandas
+ragas
+python-dotenv
+plotly
+requests
+tqdm
