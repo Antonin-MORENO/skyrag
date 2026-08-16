@@ -81,6 +81,41 @@ def get_llm() -> ChatGroq:
     return _llm
 
 
+def _invoke_llm_with_retry(prompt: str, max_retries: int = 5) -> str:
+    """Calls the LLM with retry/backoff on Groq's free-tier rate limit.
+    Shared by both the query-rewriting and answer-generation steps, since
+    each question now makes two LLM calls and either can hit the limit."""
+    llm = get_llm()
+    for attempt in range(max_retries):
+        try:
+            response = llm.invoke(prompt)
+            return response.content
+        except RateLimitError:
+            wait_seconds = 20 * (attempt + 1)
+            print(f"  Rate limit hit, waiting {wait_seconds}s before retry "
+                  f"({attempt + 1}/{max_retries})...")
+            time.sleep(wait_seconds)
+    raise RuntimeError("Groq rate limit still exceeded after all retries.")
+
+
+REWRITE_PROMPT = """Rewrite the question below into a short, keyword-dense \
+search query for a semantic search engine over aviation accident reports. \
+Include any aircraft type, location, and event type mentioned. Output ONLY \
+the rewritten query, nothing else.
+
+Question: {question}
+Search query:"""
+
+
+def rewrite_query_for_search(question: str) -> str:
+    """Turns a natural-language question into a keyword-rich search query.
+    The embedding model used here is lightweight and was found to retrieve
+    noticeably better on keyword-dense queries than on short natural
+    questions, so this rewriting step runs before every retrieval."""
+    prompt = REWRITE_PROMPT.format(question=question)
+    return _invoke_llm_with_retry(prompt).strip()
+
+
 def retrieve(query: str, top_k: int = 5) -> list[dict]:
     """Returns the top_k most relevant chunks for the query, with metadata.
     Uses exact cosine similarity over the full corpus (see module docstring
@@ -122,31 +157,34 @@ Question: {question}
 Answer:"""
 
 
-def generate_answer(question: str, chunks: list[dict], max_retries: int = 5) -> str:
-    """Generates an answer from the question and retrieved chunks.
-    Retries with backoff if Groq's free-tier rate limit (tokens/minute)
-    is hit, since evaluation runs many requests in a short span."""
-    context = "\n\n---\n\n".join(c["text"] for c in chunks)
-    prompt = PROMPT_TEMPLATE.format(context=context, question=question)
+MAX_CHARS_PER_CHUNK_IN_PROMPT = 600
 
-    llm = get_llm()
-    for attempt in range(max_retries):
-        try:
-            response = llm.invoke(prompt)
-            return response.content
-        except RateLimitError:
-            wait_seconds = 15 * (attempt + 1)
-            print(f"  Rate limit hit, waiting {wait_seconds}s before retry "
-                  f"({attempt + 1}/{max_retries})...")
-            time.sleep(wait_seconds)
-    raise RuntimeError("Groq rate limit still exceeded after all retries.")
+
+def generate_answer(question: str, chunks: list[dict]) -> str:
+    """Generates an answer from the question and retrieved chunks.
+    Each chunk's text is truncated before being sent to the LLM to stay
+    well under Groq's free-tier tokens/minute limit - the full,
+    untruncated chunks are still what gets recorded for RAGAS evaluation,
+    only the generation prompt itself is shortened."""
+    context = "\n\n---\n\n".join(
+        c["text"][:MAX_CHARS_PER_CHUNK_IN_PROMPT] for c in chunks
+    )
+    prompt = PROMPT_TEMPLATE.format(context=context, question=question)
+    return _invoke_llm_with_retry(prompt)
 
 
 def answer_question(question: str, top_k: int = 5) -> dict:
-    """Full pipeline: retrieve chunks, then generate an answer from them."""
-    chunks = retrieve(question, top_k=top_k)
+    """Full pipeline: rewrite the question into a search query, retrieve
+    chunks with it, then generate an answer using the original question."""
+    search_query = rewrite_query_for_search(question)
+    chunks = retrieve(search_query, top_k=top_k)
     answer = generate_answer(question, chunks)
-    return {"question": question, "answer": answer, "chunks": chunks}
+    return {
+        "question": question,
+        "search_query": search_query,
+        "answer": answer,
+        "chunks": chunks,
+    }
 
 
 if __name__ == "__main__":

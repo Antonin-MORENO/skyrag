@@ -73,7 +73,7 @@ def run_rag_on_golden_dataset(golden: list[dict]) -> list[dict]:
     for item in golden:
         print(f"  - {item['id']}: {item['question'][:60]}...")
         result = answer_question(item["question"], top_k=5)
-        time.sleep(5)  # preventive throttling to stay under Groq's free-tier TPM limit
+        time.sleep(35)  # generous throttling: Groq free tier TPM is a rolling window
         records.append({
             "question": item["question"],
             "answer": result["answer"],
