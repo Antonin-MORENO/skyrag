@@ -8,32 +8,21 @@ import os
 import time
 from pathlib import Path
 
-import chromadb
-import numpy as np
 from dotenv import load_dotenv
 from groq import RateLimitError
 from langchain_groq import ChatGroq
+from qdrant_client import QdrantClient
 from sentence_transformers import SentenceTransformer
 
-BASE_DIR = Path(__file__).resolve().parents[2]
-CHROMA_DIR = BASE_DIR / "data" / "processed" / "chroma_db"
-COLLECTION_NAME = "accident_reports"
+QDRANT_COLLECTION_NAME = "accident_reports"
 EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
 LLM_MODEL_NAME = "llama-3.1-8b-instant"
 
 load_dotenv()
 
 _embedding_model = None
+_qdrant_client = None
 _llm = None
-
-# In-memory cache of the full corpus: exact search, no ANN approximation.
-# Chroma's default HNSW index was found to have poor recall at small top_k
-# on this corpus (verified: the true nearest match was regularly missing
-# from results even at top_k=20), so we bypass it and search the stored
-# embeddings directly with numpy instead.
-_corpus_embeddings = None
-_corpus_documents = None
-_corpus_metadatas = None
 
 
 def get_embedding_model() -> SentenceTransformer:
@@ -43,32 +32,15 @@ def get_embedding_model() -> SentenceTransformer:
     return _embedding_model
 
 
-def _load_corpus() -> None:
-    """Loads every embedding/document/metadata from Chroma into memory once.
-    Paginated in batches, since fetching everything in a single call hits
-    SQLite's bound-variable limit on a corpus this size."""
-    global _corpus_embeddings, _corpus_documents, _corpus_metadatas
-
-    client = chromadb.PersistentClient(path=str(CHROMA_DIR))
-    collection = client.get_collection(COLLECTION_NAME)
-
-    batch_size = 5000
-    total = collection.count()
-
-    all_embeddings, all_documents, all_metadatas = [], [], []
-    for offset in range(0, total, batch_size):
-        batch = collection.get(
-            limit=batch_size,
-            offset=offset,
-            include=["embeddings", "documents", "metadatas"],
-        )
-        all_embeddings.extend(batch["embeddings"])
-        all_documents.extend(batch["documents"])
-        all_metadatas.extend(batch["metadatas"])
-
-    _corpus_embeddings = np.array(all_embeddings, dtype=np.float32)
-    _corpus_documents = all_documents
-    _corpus_metadatas = all_metadatas
+def get_qdrant_client() -> QdrantClient:
+    global _qdrant_client
+    if _qdrant_client is None:
+        url = os.getenv("QDRANT_URL")
+        api_key = os.getenv("QDRANT_API_KEY")
+        if not url or not api_key:
+            raise ValueError("QDRANT_URL / QDRANT_API_KEY not found. Check your .env file.")
+        _qdrant_client = QdrantClient(url=url, api_key=api_key)
+    return _qdrant_client
 
 
 def get_llm() -> ChatGroq:
@@ -118,29 +90,25 @@ def rewrite_query_for_search(question: str) -> str:
 
 def retrieve(query: str, top_k: int = 5) -> list[dict]:
     """Returns the top_k most relevant chunks for the query, with metadata.
-    Uses exact cosine similarity over the full corpus (see module docstring
-    on why this replaces Chroma's approximate HNSW search)."""
-    if _corpus_embeddings is None:
-        _load_corpus()
-
+    Uses Qdrant Cloud, with a higher search_ef than the default for better
+    recall (see migrate_to_qdrant.py for the collection's HNSW config)."""
     model = get_embedding_model()
-    query_embedding = model.encode([query])[0].astype(np.float32)
+    client = get_qdrant_client()
 
-    # Cosine similarity = dot product of L2-normalized vectors
-    query_norm = query_embedding / np.linalg.norm(query_embedding)
-    corpus_norm = _corpus_embeddings / np.linalg.norm(
-        _corpus_embeddings, axis=1, keepdims=True
-    )
-    similarities = corpus_norm @ query_norm
-
-    top_indices = np.argsort(-similarities)[:top_k]
+    query_embedding = model.encode([query])[0].tolist()
+    results = client.query_points(
+        collection_name=QDRANT_COLLECTION_NAME,
+        query=query_embedding,
+        limit=top_k,
+        search_params={"hnsw_ef": 256},
+    ).points
 
     chunks = []
-    for i in top_indices:
+    for point in results:
         chunks.append({
-            "text": _corpus_documents[i],
-            "doc_id": _corpus_metadatas[i]["doc_id"],
-            "distance": float(1 - similarities[i]),  # cosine distance, for consistency with before
+            "text": point.payload["text"],
+            "doc_id": point.payload["doc_id"],
+            "distance": 1 - point.score,  # Qdrant returns cosine similarity, not distance
         })
     return chunks
 
