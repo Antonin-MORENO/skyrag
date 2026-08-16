@@ -15,3 +15,10 @@ tqdm
 sqlalchemy
 dotenv
 pandas
+sentence_transformers
+chromadb
+langchain_text_splitters
+langchain-groq
+langchain-huggingface
+ragas==0.3.9
+datasets

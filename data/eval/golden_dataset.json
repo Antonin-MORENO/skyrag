@@ -1,0 +1,122 @@
+[
+  {
+    "id": "g01",
+    "question": "What caused the fatal Learjet 35A accident at Teterboro in 2017?",
+    "reference_answer": "The pilot-in-command attempted to salvage an unstabilized visual approach, which led to an aerodynamic stall at low altitude. Contributing factors included letting an unapproved second-in-command fly, poor preflight planning, and no approach briefing.",
+    "source_doc_id": "CEN17MA183"
+  },
+  {
+    "id": "g02",
+    "question": "What led to the runway incursion between a Southwest and a FedEx aircraft at Austin airport in 2023?",
+    "reference_answer": "The local air traffic controller incorrectly assumed the Southwest aircraft would depart before the FedEx aircraft arrived on the same runway, causing a loss of separation. Expectation bias, poor situational awareness, and lack of low-visibility training contributed.",
+    "source_doc_id": "DCA23FA149"
+  },
+  {
+    "id": "g03",
+    "question": "Why did two floatplanes collide near Ketchikan, Alaska in 2019?",
+    "reference_answer": "The see-and-avoid concept's inherent limitations prevented both pilots from spotting each other in time, and neither aircraft's traffic display system gave visual or aural alerts, in an area with heavy air tour traffic.",
+    "source_doc_id": "CEN19MA141"
+  },
+  {
+    "id": "g04",
+    "question": "What caused the fatal helicopter ditching into the East River in New York in 2018?",
+    "reference_answer": "A passenger harness/tether system provided by NYONair caught on and activated the floor-mounted engine fuel shutoff lever, causing a loss of engine power and ditching. Deficient safety management and inadequate FAA oversight contributed.",
+    "source_doc_id": "ERA18MA099"
+  },
+  {
+    "id": "g05",
+    "question": "What was the probable cause of the Survival Flight helicopter crash in Zaleski, Ohio in 2019?",
+    "reference_answer": "Survival Flight's inadequate safety management normalized noncompliance with risk analysis procedures, so the flight departed without a proper preflight weather evaluation, leading the pilot into instrument conditions and a collision with terrain.",
+    "source_doc_id": "CEN19FA072"
+  },
+  {
+    "id": "g06",
+    "question": "What happened during the Air Canada incident at San Francisco airport in 2017?",
+    "reference_answer": "The flight crew misidentified taxiway C as the intended landing runway, mainly because they hadn't reviewed the NOTAM about the parallel runway closure. Fatigue and poor crew resource management also contributed.",
+    "source_doc_id": "DCA17IA148"
+  },
+  {
+    "id": "g07",
+    "question": "What caused the fatal tour helicopter crash in Kekaha, Hawaii in 2019?",
+    "reference_answer": "The pilot decided to continue flying under visual flight rules into instrument meteorological conditions, resulting in a collision with terrain. Safari Aviation's lack of safety management and FAA oversight gaps contributed.",
+    "source_doc_id": "ANC20MA010"
+  },
+  {
+    "id": "g08",
+    "question": "What went wrong on the Atlas Air Boeing 767 that crashed in Trinity Bay, Texas in 2019?",
+    "reference_answer": "The first officer, flying the plane, reacted incorrectly to an inadvertent go-around mode activation, became spatially disoriented, and made nose-down inputs that put the aircraft in an unrecoverable steep descent. The captain failed to adequately monitor and intervene.",
+    "source_doc_id": "DCA19MA086"
+  },
+  {
+    "id": "g09",
+    "question": "Why did the skydiving aircraft crash shortly after takeoff in Mokuleia, Hawaii in 2019, killing 11 people?",
+    "reference_answer": "The pilot's aggressive takeoff maneuver caused an accelerated stall and loss of control too low to recover. The aircraft was near its aft center of gravity limit, and a twisted left wing that had not been repaired reduced the stall margin.",
+    "source_doc_id": "WPR19MA177"
+  },
+  {
+    "id": "g10",
+    "question": "What caused the fatal window blowout on the Southwest Airlines 737 in 2018?",
+    "reference_answer": "A low-cycle fatigue crack in a fan blade caused it to separate in flight and strike the engine fan case, leading parts of the fan cowl to break off. One of these parts hit the fuselage near a window, causing the window to depart and the cabin to rapidly depressurize.",
+    "source_doc_id": "DCA18MA142"
+  },
+  {
+    "id": "g11",
+    "question": "What caused the fatal crash of a Cessna 208B near Togiak, Alaska in 2016?",
+    "reference_answer": "The flight crew continued flying under visual flight rules into deteriorating visibility and failed to perform an immediate escape maneuver after entering instrument conditions, resulting in controlled flight into terrain (CFIT).",
+    "source_doc_id": "ANC17MA001"
+  },
+  {
+    "id": "g12",
+    "question": "What caused the runway overrun of the PenAir Saab 2000 at Unalaska, Alaska in 2019?",
+    "reference_answer": "The landing gear manufacturer had incorrectly wired the wheel speed transducer harnesses during overhaul, which disabled the antiskid system, caused a tire failure, and led to a major loss of braking ability. Landing with a tailwind exceeding limits also contributed.",
+    "source_doc_id": "DCA20MA002"
+  },
+  {
+    "id": "g13",
+    "question": "What caused the engine power loss in the P2004 Bravo accident near Quinton, Virginia in 2017?",
+    "reference_answer": "The flight instructor and commercial pilot performed an inadequate preflight inspection, which failed to catch water contamination in the fuel supply and led to a total loss of engine power.",
+    "source_doc_id": "ERA17LA280"
+  },
+  {
+    "id": "g14",
+    "question": "What caused the collision between a drone and a Robinson R44 helicopter near Daytona Beach in 2023?",
+    "reference_answer": "The drone (UAS) operator failed to stay within the limits of the airspace authorization (COA) he was using to fly inside Class C airspace, resulting in a collision between the drone and the helicopter.",
+    "source_doc_id": "ERA24LA079"
+  },
+  {
+    "id": "g15",
+    "question": "Why did the Piper PA-23-250 lose engine power near Forney, Texas in 2023?",
+    "reference_answer": "The pilot's inadequate fuel planning and poor in-flight decision-making led to a total loss of engine power due to fuel exhaustion.",
+    "source_doc_id": "CEN24LA068"
+  },
+  {
+    "id": "g16",
+    "question": "What caused the Taylorcraft accident near Columbia, Tennessee in 2023?",
+    "reference_answer": "A partial loss of engine power caused by an accumulation of carburetor ice led to an off-airport landing, which substantially damaged the airplane.",
+    "source_doc_id": "ERA24LA032"
+  },
+  {
+    "id": "g17",
+    "question": "What happened during the Piper PA28 landing accident in Glencoe, Minnesota in 2023?",
+    "reference_answer": "The airplane collided with a deer during the landing rollout.",
+    "source_doc_id": "CEN24LA051"
+  },
+  {
+    "id": "g18",
+    "question": "What caused the Cameron Balloons hot air balloon accident in Albuquerque in 2023?",
+    "reference_answer": "The pilot was unable to maintain control of the balloon during landing because of unforecast wind shear and turbulent air.",
+    "source_doc_id": "WPR24LA019"
+  },
+  {
+    "id": "g19",
+    "question": "What caused the fatal Piper PA-28-161 in-flight breakup near Fort Pierce, Florida in 2023?",
+    "reference_answer": "The left-seat instructor intentionally flew the airplane through an aerobatic steep turn it wasn't approved for, exceeding the aircraft's structural limitations and causing an in-flight breakup.",
+    "source_doc_id": "ERA23FA340"
+  },
+  {
+    "id": "g20",
+    "question": "What caused the fatal Cessna R182 accident near McCall, Idaho in 2023?",
+    "reference_answer": "Maintenance personnel failed to properly torque and inspect the magneto hardware, which caused a partial loss of engine power.",
+    "source_doc_id": "WPR23FA225"
+  }
+]
