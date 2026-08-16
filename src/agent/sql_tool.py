@@ -44,6 +44,8 @@ single PostgreSQL SELECT query that answers the question. Only output the \
 raw SQL query, nothing else - no explanation, no markdown code fences.
 
 Guidelines:
+- For "how many"/"count" questions, use COUNT(*) and return a single number - \
+do not list individual rows.
 - For "deadliest"/"worst"/"most severe" questions, ORDER BY fatal_injury_count \
 DESC (or the relevant severity column) and LIMIT the results.
 - Always include identifying columns in the SELECT (e.g. ntsb_no, event_date, \
@@ -52,6 +54,9 @@ its own without needing to look up the report separately.
 - The "make" and "model" columns are not normalized (e.g. a Learjet may be \
 stored as 'LEARJET', 'LEARJET INC 45', or 'GATES LEARJET CORP 55'). Always \
 match them with ILIKE '%keyword%' instead of an exact equality check.
+- The "state" column stores the FULL state name (e.g. 'Alaska', 'New Jersey'), \
+never a two-letter abbreviation like 'AK'. Match it with ILIKE '%name%' too, \
+in case of minor formatting differences.
 
 Schema:
 {schema}
