@@ -16,7 +16,7 @@ from sentence_transformers import SentenceTransformer
 
 QDRANT_COLLECTION_NAME = "accident_reports"
 EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
-LLM_MODEL_NAME = "llama-3.1-8b-instant"
+LLM_MODEL_NAME = "openai/gpt-oss-20b"
 
 load_dotenv()
 
