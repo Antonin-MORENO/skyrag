@@ -134,4 +134,4 @@ US NTSB Aviation Accident and Incident Final Reports Dataset (2016 to 2023), by 
 
 ## Live demo
 
-Deployed on Streamlit Community Cloud: *https://share.streamlit.io/*
+Deployed on Streamlit Community Cloud: *https://skyrag.streamlit.app/*
